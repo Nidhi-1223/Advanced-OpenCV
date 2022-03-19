@@ -1,4 +1,9 @@
 # Advanced OpenCV
+
+REFERNCE - https://www.youtube.com/watch?v=01sAkU_NvOY
+
+### Files and their purpose:
+
 1_handtracking.py - the main code (without implementing OOP) //this the file that doesnt detect the bead properly
 
 1.1landmarks_bareminimun.py - the bare minimum code required for handtracking in any given project
