@@ -69,10 +69,17 @@ class handDetector():
         self.max_num_hands = max_num_hands
         self.min_detection_confidence = min_detection_confidence
         self.min_tracking_confidence = min_tracking_confidence
-
         self.mpHands = mp.solutions.hands
+        self.hands = self.mpHands.Hands(
+            static_image_mode=False, 
+            min_detection_confidence=0.5, 
+            min_tracking_confidence=0.5, 
+            max_num_hands=2
+        )
+        
+        #self.mpHands = mp.solutions.hands
         print(self.static_image_mode)
-        self.hands = self.mpHands.Hands(self.static_image_mode, self.max_num_hands, self.min_detection_confidence, self.min_tracking_confidence)
+        #self.hands = self.mpHands.Hands(self.static_image_mode, self.max_num_hands, self.min_detection_confidence, self.min_tracking_confidence)
         self.mpDraw = mp.solutions.drawing_utils
         
     def findHands(self,img, draw = True):
@@ -102,28 +109,30 @@ class handDetector():
 def main():
     pTime = 0
     cTime = 0
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
     detector = handDetector()
 
-    while True:
+    while cap.isOpened():
         success, img = cap.read()
-        img = detector.findHands(img)
-        lmlist = detector.findPosition(img)
-        if len(lmlist) != 0:
-            print(lmlist[4])
+        print(success)
+        if(success):
+            img = detector.findHands(img)
+            lmlist = detector.findPosition(img)
+            if len(lmlist) != 0:
+                print(lmlist[4])
 
-        cTime = time.time()
-        fps = 1 / (cTime - pTime)
-        pTime = cTime
+            cTime = time.time()
+            fps = 1 / (cTime - pTime)
+            pTime = cTime
 
-        cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
+            cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
 
-        cv2.imshow("Image", img)
+            cv2.imshow("Image", img)
         key = cv2.waitKey(20)
         if (key == ord('q')):
             break
-        cap.release() 
-        cv2.destroyAllWindows()
+    cap.release() 
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
